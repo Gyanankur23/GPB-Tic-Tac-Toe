@@ -106,7 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
   /**************************
    * GAME PAGE FUNCTIONALITY
    **************************/
-  const board = document.getElementById("gameBoard");
+ 
+const startGameBtn = document.getElementById("startGameBtn");
+
+  if (startGameBtn) {
+    startGameBtn.addEventListener("click", () => {
+      startGame(); // Ensure this function exists
+    });
+  }
+}); const board = document.getElementById("gameBoard");
   if (board) {
     // Create the board (9 cells) if not created.
     let cells = Array.from(board.getElementsByClassName("cell"));
