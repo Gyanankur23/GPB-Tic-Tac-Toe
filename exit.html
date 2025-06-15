@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Goodbye!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tac.css">
+</head>
+<body class="full-screen flex-center">
+  <div class="container space-y-6">
+    <h1 class="text-4xl font-bold">Goodbye!</h1>
+    <p class="text-lg">Thanks for playing Tic Tac Toe.</p>
+
+    <!-- ✅ Game Stats Recap -->
+    <div class="bg-gray-100 p-4 rounded stats-box text-sm">
+      <h2 class="font-bold">Your Game Stats</h2>
+      <ul class="space-y-1">
+        <li>Total Games Played: <span id="exitGames">0</span></li>
+        <li>Wins: <span id="exitWins">0</span></li>
+        <li>Losses: <span id="exitLosses">0</span></li>
+        <li>Draws: <span id="exitDraws">0</span></li>
+      </ul>
+    </div>
+
+    <a href="tic.html">
+      <button class="mt-4">Return to Menu</button>
+    </a>
+  </div>
+
+  <script>
+    // Load and update game stats
+    document.getElementById("exitGames").textContent = localStorage.getItem("totalGames") || 0;
+    document.getElementById("exitWins").textContent = localStorage.getItem("wins") || 0;
+    document.getElementById("exitLosses").textContent = localStorage.getItem("losses") || 0;
+    document.getElementById("exitDraws").textContent = localStorage.getItem("draws") || 0;
+  </script>
+  <script src="toe.js"></script>
+</body>
+</html>
