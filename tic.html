@@ -88,6 +88,23 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log("Service Worker Registered!"))
     .catch(error => console.log("Service Worker Registration Failed:", error));
 }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Service Worker Registered Successfully!"))
+        .catch(error => console.log("Service Worker Registration Failed:", error));
+    }
+
+    // ✅ Install App Button Visibility and Handling
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredPrompt = event;
+      document.getElementById("installApp").style.display = "block"; // Shows install button
+    });
+
+    document.getElementById("installApp").addEventListener("click", () => {
+      if (deferredPrompt) deferredPrompt.prompt();
+    });
   </script>
   <script src="toe.js"></script>
 </body>
