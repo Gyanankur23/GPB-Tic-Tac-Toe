@@ -20,16 +20,23 @@ document.addEventListener("DOMContentLoaded", () => {
   updateStats();
 
   // Dark Mode Toggle
+
   const darkToggleElem = document.getElementById("darkModeToggle");
+
+  // ✅ Apply dark mode immediately based on saved localStorage value
+  if (localStorage.getItem("darkMode") === "true") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark"); // Ensure light mode is applied by default
+  }
+
   if (darkToggleElem) {
     darkToggleElem.addEventListener("click", () => {
       document.documentElement.classList.toggle("dark");
       localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
     });
-    if (localStorage.getItem("darkMode") === "true") {
-      document.documentElement.classList.add("dark");
-    }
   }
+});
 
   // Theme Selector
   const themeSelector = document.getElementById("themeSelector");
