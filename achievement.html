@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Achievements</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tac.css">
+  <style>
+    .locked {
+      opacity: 0.3;
+      filter: grayscale(100%);
+    }
+    .unlocked {
+      opacity: 1;
+      filter: none;
+      animation: pulse 1s infinite;
+    }
+    @keyframes confetti {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    .confetti {
+      position: fixed;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--glow-bright);
+      animation: confetti 2s linear infinite;
+    }
+  </style>
+</head>
+<body class="full-screen flex-center">
+  <div class="container space-y-6">
+    <h1 class="text-4xl font-bold">🏆 Achievements</h1>
+    <h2 class="text-lg">Player: <span id="playerName">Guest</span></h2>
+    <div class="bg-yellow-100 p-4 rounded text-sm">
+      <h3 class="font-semibold mb-2">Your Milestones</h3>
+      <ul class="list-disc list-inside">
+        <li id="badge1" class="locked">🏆 First Win</li>
+        <li id="badge5" class="locked">🔥 5 Wins Streak</li>
+        <li id="badge10" class="locked">💡 10 Wins Legend</li>
+        <li id="badge50" class="locked">💎 50 Wins Master</li>
+        <li id="badge100" class="locked">🏅 100 Wins Grandmaster</li>
+        <li id="badge200" class="locked">🚀 200 Wins Champion</li>
+        <li id="badge500" class="locked">👑 500 Wins Ultimate</li>
+      </ul>
+    </div>
+    <div id="confettiContainer"></div>
+    <button id="backToMenuBtn">Back to Menu</button>
+  </div>
+  <script>
+    const playerName = sessionStorage.getItem("playerName") || "Guest";
+    document.getElementById("playerName").textContent = playerName;
+    function getWins() {
+      return parseInt(localStorage.getItem("wins") || "0");
+    }
+    function unlockBadge(id, requiredWins) {
+      const badge = document.getElementById(id);
+      if (getWins() >= requiredWins) {
+        badge.classList.remove("locked");
+        badge.classList.add("unlocked");
+        showConfetti();
+      }
+    }
+    function showConfetti() {
+      const container = document.getElementById("confettiContainer");
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.animationDuration = Math.random() * 2 + 1 + "s";
+        container.appendChild(confetti);
+      }
+      setTimeout(() => container.innerHTML = "", 2000);
+    }
+    unlockBadge("badge1", 1);
+    unlockBadge("badge5", 5);
+    unlockBadge("badge10", 10);
+    unlockBadge("badge50", 50);
+    unlockBadge("badge100", 100);
+    unlockBadge("badge200", 200);
+    unlockBadge("badge500", 500);
+    document.getElementById("backToMenuBtn").addEventListener("click", () => {
+      window.location.href = "tic.html";
+    });
+  </script>
+  <script src="toe.js"></script>
+</body>
+</html>
