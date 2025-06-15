@@ -21,7 +21,11 @@
     <div id="playerInfo" class="text-xl"></div>
     <div id="scoreBoard" class="text-xl"></div>
     <div id="gameBoard" class="board glow"></div>
-    <div id="turnTimer" class="text-red-500 font-bold" style="display: none;">Turn Time: <span id="timerCount">10</span>s</div>
+
+    <div id="turnTimer" class="text-red-500 font-bold" style="display: none;">
+      Turn Time: <span id="timerCount">10</span>s
+    </div>
+
     <div class="space-x-2">
       <label for="themeSelector">Theme:</label>
       <select id="themeSelector" class="px-2 py-1 border rounded">
@@ -30,6 +34,7 @@
         <option value="candy">Candy</option>
       </select>
     </div>
+
     <div>
       <label for="modeSelector">Game Mode:</label>
       <select id="modeSelector" class="px-2 py-1 border rounded">
@@ -38,10 +43,12 @@
         <option value="tournament">Tournament</option>
       </select>
     </div>
+
     <div class="text-sm text-gray-600 space-y-1">
       <p>Total Games: <span id="totalGames">0</span></p>
       <p>Wins: <span id="wins">0</span>, Losses: <span id="losses">0</span>, Draws: <span id="draws">0</span></p>
     </div>
+
     <div class="text-sm bg-yellow-100 p-3 rounded">
       <strong>Achievements:</strong>
       <ul class="list-disc list-inside">
@@ -50,26 +57,35 @@
         <li>💡 Played All Modes</li>
       </ul>
     </div>
+
+    <!-- ✅ NEW: Start Game Button added here -->
     <div class="space-x-4">
-      <button id="resetBtn">Reset</button>
-      <button id="backToMenuBtn">Back to Menu</button>
+      <button id="startGameBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Start Game</button>
+      <button id="resetBtn" class="bg-gray-500 text-white px-4 py-2 rounded">Reset</button>
+      <button id="backToMenuBtn" class="bg-red-500 text-white px-4 py-2 rounded">Back to Menu</button>
     </div>
   </div>
+
+  <!-- Modal for game result -->
   <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="modal-content bg-white p-6 rounded shadow-lg">
       <h2 id="modalMessage" class="text-2xl mb-4"></h2>
       <button id="modalCloseBtn" class="px-4 py-2 bg-green-500 text-white rounded">OK</button>
     </div>
   </div>
+
   <script>
     document.getElementById("themeSelector").addEventListener("change", e => {
       document.body.setAttribute("data-theme", e.target.value);
     });
+
     document.getElementById("totalGames").textContent = localStorage.getItem("totalGames") || 0;
     document.getElementById("wins").textContent = localStorage.getItem("wins") || 0;
     document.getElementById("losses").textContent = localStorage.getItem("losses") || 0;
     document.getElementById("draws").textContent = localStorage.getItem("draws") || 0;
   </script>
+
+  <!-- ✅ Make sure this is at bottom -->
   <script src="toe.js"></script>
 </body>
 </html>
