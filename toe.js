@@ -107,228 +107,221 @@ document.addEventListener("DOMContentLoaded", () => {
    * GAME PAGE FUNCTIONALITY
    **************************/
  
+// Function to start the game properly
+function startGame() {
+  gameActive = true;
+  resetBoard(); // Ensures board resets and game starts fresh
+}
+
+// Ensure startGameBtn triggers game start
 const startGameBtn = document.getElementById("startGameBtn");
 
-  if (startGameBtn) {
-    startGameBtn.addEventListener("click", () => {
-      startGame(); // Ensure this function exists
-    });
+if (startGameBtn) {
+  startGameBtn.addEventListener("click", () => {
+    startGame();
+  });
+}
+
+// Game board setup
+const board = document.getElementById("gameBoard");
+
+if (board) {
+  // Create the board (9 cells) if not created
+  let cells = Array.from(board.getElementsByClassName("cell"));
+
+  if (cells.length === 0) {
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.index = i;
+      board.appendChild(cell);
+    }
+    cells = Array.from(board.getElementsByClassName("cell"));
   }
-}); const board = document.getElementById("gameBoard");
-  if (board) {
-    // Create the board (9 cells) if not created.
-    let cells = Array.from(board.getElementsByClassName("cell"));
-    if (cells.length === 0) {
-      for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.dataset.index = i;
-        board.appendChild(cell);
-      }
-      cells = Array.from(board.getElementsByClassName("cell"));
-    }
 
-    let gameActive = true;
-    let turnTimer = 10; // Starting timer interval for Blitz mode
-    const timerCountEl = document.getElementById("timerCount");
-    // Game mode: "classic", "blitz", or "tournament"
-    let gameModeStored = sessionStorage.getItem("gameMode") || "classic"; // Mode: "friend" or "computer"
-    let mode = sessionStorage.getItem("playerMode") || "friend";
+  let gameActive = true;
+  let turnTimer = 10; // Timer for Blitz mode
+  const timerCountEl = document.getElementById("timerCount");
 
-    let humanSymbol = "X";
-    let computerSymbol = "O";
-    let currentPlayer = "X";
-    const p1 = sessionStorage.getItem("player1") || "Player 1";
-    const p2 = sessionStorage.getItem("player2") || "Player 2";
+  // Retrieve game mode and player mode settings
+  let gameModeStored = sessionStorage.getItem("gameMode") || "classic";
+  let mode = sessionStorage.getItem("playerMode") || "friend";
 
-    if (mode === "computer") {
-      humanSymbol = sessionStorage.getItem("playerSymbol") || "X";
-      computerSymbol = humanSymbol === "X" ? "O" : "X";
-      // In computer mode, if human chooses "O", computer (as "X") starts.
-      currentPlayer = humanSymbol === "O" ? computerSymbol : humanSymbol;
-    }
-    const playerInfo = document.getElementById("playerInfo");
-    if (playerInfo) {
-      if (mode === "friend")
-        playerInfo.textContent = `${p1} (X) vs ${p2} (O) - ${p1}'s Turn`;
-      else {
-        if (humanSymbol === "O")
-          playerInfo.textContent = `Computer (${computerSymbol}) - Starting First`;
-        else
-          playerInfo.textContent = `You (${humanSymbol}) vs Computer (${computerSymbol}) - Your Turn`;
-      }
-    }
+  let humanSymbol = "X";
+  let computerSymbol = "O";
+  let currentPlayer = "X";
 
-    // Tournament mode variables (best-of-3 rounds)
-    let tournamentWinsHuman = 0, tournamentWinsComputer = 0, currentRound = 1;
-    const maxRounds = 3;
+  const p1 = sessionStorage.getItem("player1") || "Player 1";
+  const p2 = sessionStorage.getItem("player2") || "Player 2";
 
-    // Show timer only in Blitz mode, hide for other modes.
-    if (gameModeStored === "blitz") {
-      if (timerCountEl && timerCountEl.parentElement)
-        timerCountEl.parentElement.style.display = "block";
+  if (mode === "computer") {
+    humanSymbol = sessionStorage.getItem("playerSymbol") || "X";
+    computerSymbol = humanSymbol === "X" ? "O" : "X";
+
+    // If human chooses "O", computer (as "X") starts
+    currentPlayer = humanSymbol === "O" ? computerSymbol : humanSymbol;
+  }
+
+  // Display player info
+  const playerInfo = document.getElementById("playerInfo");
+  if (playerInfo) {
+    if (mode === "friend") {
+      playerInfo.textContent = `${p1} (X) vs ${p2} (O) - ${p1}'s Turn`;
     } else {
-      if (timerCountEl && timerCountEl.parentElement)
-        timerCountEl.parentElement.style.display = "none";
+      playerInfo.textContent =
+        humanSymbol === "O"
+          ? `Computer (${computerSymbol}) - Starting First`
+          : `You (${humanSymbol}) vs Computer (${computerSymbol}) - Your Turn`;
     }
+  }
 
-    // --- Start Blitz Timer Function ---
-    let timerInterval;
-    const startBlitzTimer = () => {
-      // Clear any existing interval before starting a new one.
-      if (timerInterval) clearInterval(timerInterval);
-      resetTurnTimer();
-      timerInterval = setInterval(() => {
-        if (!gameActive) {
-          clearInterval(timerInterval);
-          return;
-        }
-        if (turnTimer > 0) {
-          turnTimer--;
-          if (timerCountEl) timerCountEl.textContent = turnTimer;
-        } else {
-          // In Blitz mode, if timer runs out, end current round.
-          tournamentModeCheckAndEnd("Time's Up!") || endGame("Time's Up!");
-          clearInterval(timerInterval);
-        }
-      }, 1000);
-    };
+  // Tournament mode settings
+  let tournamentWinsHuman = 0,
+    tournamentWinsComputer = 0,
+    currentRound = 1;
+  const maxRounds = 3;
 
-    // Reset timer to 10 seconds.
-    const resetTurnTimer = () => {
-      if (gameModeStored === "blitz") {
-        turnTimer = 10;
-        if (timerCountEl) timerCountEl.textContent = turnTimer;
-      }
-    };
+  // Show timer only in Blitz mode
+  if (gameModeStored === "blitz") {
+    if (timerCountEl && timerCountEl.parentElement)
+      timerCountEl.parentElement.style.display = "block";
+  } else {
+    if (timerCountEl && timerCountEl.parentElement)
+      timerCountEl.parentElement.style.display = "none";
+  }
 
-    // Start the Blitz timer if in Blitz mode.
-    if (gameModeStored === "blitz") {
-      startBlitzTimer();
-    }
-
-    const winPatterns = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
-    ];
-
-    const checkWin = () => {
-      for (let pattern of winPatterns) {
-        const [a, b, c] = pattern;
-        if (
-          cells[a].textContent &&
-          cells[a].textContent === cells[b].textContent &&
-          cells[a].textContent === cells[c].textContent
-        ) {
-          return cells[a].textContent;
-        }
-      }
-      return null;
-    };
-
-    // Tournament mode round-check logic: best of 3 rounds.
-    const tournamentModeCheckAndEnd = (message) => {
-      if (gameModeStored !== "tournament") return false;
-      gameActive = false;
-      const modal = document.getElementById("gameModal");
-      if (modal) {
-        document.getElementById("modalMessage").textContent = `Round ${currentRound}: ${message}`;
-        modal.classList.add("show");
-      }
-      // Determine round winner:
-      if (message.includes("Wins") || message.includes("Time's Up")) {
-        if (mode === "computer") {
-          if (message.startsWith(humanSymbol))
-            tournamentWinsHuman++;
-          else
-            tournamentWinsComputer++;
-        } else if (mode === "friend") {
-          if (message.startsWith(p1))
-            tournamentWinsHuman++;
-          else
-            tournamentWinsComputer++; // For simplicity, using same variables.
-        }
-      }
-      if (currentRound < maxRounds) {
-        currentRound++;
-        setTimeout(() => {
-          resetBoard();
-          if (gameModeStored === "blitz") startBlitzTimer();
-        }, 1500);
-      } else {
-        let finalMessage = "";
-        if (tournamentWinsHuman > tournamentWinsComputer)
-          finalMessage = "Tournament Over! You win!";
-        else if (tournamentWinsHuman < tournamentWinsComputer)
-          finalMessage = "Tournament Over! Computer wins!";
-        else
-          finalMessage = "Tournament Over! It's a draw!";
-        if (modal) {
-          document.getElementById("modalMessage").textContent = finalMessage;
-        }
-        updateStats();
-      }
-      return true;
-    };
-
-    const endGame = (message) => {
-      if (gameModeStored === "tournament") {
-        tournamentModeCheckAndEnd(message);
+  // Function to start Blitz timer
+  let timerInterval;
+  const startBlitzTimer = () => {
+    if (timerInterval) clearInterval(timerInterval);
+    resetTurnTimer();
+    timerInterval = setInterval(() => {
+      if (!gameActive) {
+        clearInterval(timerInterval);
         return;
       }
-      gameActive = false;
-      const modal = document.getElementById("gameModal");
-      if (modal) {
-        document.getElementById("modalMessage").textContent = message;
-        modal.classList.add("show");
+      if (turnTimer > 0) {
+        turnTimer--;
+        if (timerCountEl) timerCountEl.textContent = turnTimer;
+      } else {
+        tournamentModeCheckAndEnd("Time's Up!") || endGame("Time's Up!");
+        clearInterval(timerInterval);
       }
-      let total = parseInt(localStorage.getItem("totalGames") || "0") + 1;
-      localStorage.setItem("totalGames", total);
-      if (message.includes("Wins")) {
-        if (mode === "friend") {
-          let w = parseInt(localStorage.getItem("wins") || "0") + 1;
-          localStorage.setItem("wins", w);
-        } else {
-          if (message.startsWith(humanSymbol))
-            localStorage.setItem("wins", parseInt(localStorage.getItem("wins") || "0") + 1);
-          else
-            localStorage.setItem("losses", parseInt(localStorage.getItem("losses") || "0") + 1);
-        }
-      } else if (message.includes("Draw")) {
-        localStorage.setItem("draws", parseInt(localStorage.getItem("draws") || "0") + 1);
-      }
-      updateStats();
-    };
+    }, 1000);
+  };
 
-    const resetBoard = () => {
-      // Clear board cells and restart game.
-      cells.forEach(cell => (cell.textContent = ""));
-      gameActive = true;
-      resetTurnTimer();
-      if (sessionStorage.getItem("gameMode") === "blitz") {
+  // Reset turn timer to 10 seconds
+  const resetTurnTimer = () => {
+    if (gameModeStored === "blitz") {
+      turnTimer = 10;
+      if (timerCountEl) timerCountEl.textContent = turnTimer;
+    }
+  };
+
+  // Start Blitz timer if in Blitz mode
+  if (gameModeStored === "blitz") {
     startBlitzTimer();
   }
-      const modal = document.getElementById("gameModal");
-      if (modal) modal.classList.remove("show");
-      if (mode === "friend") {
-        currentPlayer = "X";
-        if (playerInfo)
-          playerInfo.textContent = `${p1} (X) vs ${p2} (O) - ${p1}'s Turn`;
+
+  // Winning patterns for Tic Tac Toe
+  const winPatterns = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  // Function to check for a win
+  const checkWin = () => {
+    for (let pattern of winPatterns) {
+      const [a, b, c] = pattern;
+      if (
+        cells[a].textContent &&
+        cells[a].textContent === cells[b].textContent &&
+        cells[a].textContent === cells[c].textContent
+      ) {
+        return cells[a].textContent;
+      }
+    }
+    return null;
+  };
+
+  // Function for tournament mode (best-of-3 rounds)
+  const tournamentModeCheckAndEnd = (message) => {
+    if (gameModeStored !== "tournament") return false;
+
+    gameActive = false;
+    const modal = document.getElementById("gameModal");
+    if (modal) {
+      document.getElementById("modalMessage").textContent = `Round ${currentRound}: ${message}`;
+      modal.classList.add("show");
+    }
+
+    if (message.includes("Wins") || message.includes("Time's Up")) {
+      if (mode === "computer") {
+        message.startsWith(humanSymbol) ? tournamentWinsHuman++ : tournamentWinsComputer++;
       } else {
-        currentPlayer = humanSymbol === "O" ? computerSymbol : humanSymbol;
-        if (playerInfo) {
-          if (humanSymbol === "O")
-            playerInfo.textContent = `Computer (${computerSymbol}) - Moving First`;
-          else
-            playerInfo.textContent = `You (${humanSymbol}) vs Computer (${computerSymbol}) - Your Turn`;
-        }
+        message.startsWith(p1) ? tournamentWinsHuman++ : tournamentWinsComputer++;
       }
-      if (gameModeStored === "blitz") resetTurnTimer();
-      if (mode === "computer" && humanSymbol === "O" && gameActive) {
-        setTimeout(() => { makeComputerMove(); }, 500);
-      }
-    };
+    }
+
+    if (currentRound < maxRounds) {
+      currentRound++;
+      setTimeout(() => {
+        resetBoard();
+        if (gameModeStored === "blitz") startBlitzTimer();
+      }, 1500);
+    } else {
+      const finalMessage =
+        tournamentWinsHuman > tournamentWinsComputer
+          ? "Tournament Over! You win!"
+          : tournamentWinsHuman < tournamentWinsComputer
+          ? "Tournament Over! Computer wins!"
+          : "Tournament Over! It's a draw!";
+
+      if (modal) document.getElementById("modalMessage").textContent = finalMessage;
+      updateStats();
+    }
+    return true;
+  };
+
+  // Function to end the game
+  const endGame = (message) => {
+    if (gameModeStored === "tournament") {
+      tournamentModeCheckAndEnd(message);
+      return;
+    }
+    gameActive = false;
+    const modal = document.getElementById("gameModal");
+    if (modal) {
+      document.getElementById("modalMessage").textContent = message;
+      modal.classList.add("show");
+    }
+    let total = parseInt(localStorage.getItem("totalGames") || "0") + 1;
+    localStorage.setItem("totalGames", total);
+
+    if (message.includes("Wins")) {
+      localStorage.setItem(message.startsWith(humanSymbol) ? "wins" : "losses", parseInt(localStorage.getItem(message.startsWith(humanSymbol) ? "wins" : "losses") || "0") + 1);
+    } else if (message.includes("Draw")) {
+      localStorage.setItem("draws", parseInt(localStorage.getItem("draws") || "0") + 1);
+    }
+    updateStats();
+  };
+
+  // Function to reset the board
+  const resetBoard = () => {
+    cells.forEach((cell) => (cell.textContent = ""));
+    gameActive = true;
+    resetTurnTimer();
+    if (gameModeStored === "blitz") startBlitzTimer();
+    const modal = document.getElementById("gameModal");
+    if (modal) modal.classList.remove("show");
+  };
+}
 
     /************ COMPUTER MOVE STRATEGIES ************/
     const getAvailableIndices = () => {
