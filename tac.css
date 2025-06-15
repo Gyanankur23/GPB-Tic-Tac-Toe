@@ -1,0 +1,269 @@
+/* === Base Light Theme === */
+:root {
+  --bg-color: white;
+  --text-color: black;
+  --border-color: #000;
+  --hover-color: #eeeeee;
+  --glow-bright: orange;
+  --glow-dark: blue;
+}
+
+/* === Custom Themes === */
+[data-theme="space"] {
+  --bg-color: #0b0c10;
+  --text-color: #66fcf1;
+  --border-color: #45a29e;
+  --hover-color: #1f2833;
+  --glow-bright: #66fcf1;
+}
+[data-theme="candy"] {
+  --bg-color: #fff0f5;
+  --text-color: #ff1493;
+  --border-color: #ff69b4;
+  --hover-color: #ffe4e1;
+  --glow-bright: #ff69b4;
+}
+
+/* === Dark Mode Overrides === */
+.dark {
+  --bg-color: #1f2937;
+  --text-color: #f9fafb;
+  --border-color: #f9fafb;
+  --hover-color: #444;
+  --glow-bright: #f9fafb;
+  --glow-dark: #ccc;
+}
+
+/* === Global Styles === */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.5s, color 0.5s;
+}
+.full-screen {
+  min-height: 100vh;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  padding: 1rem;
+  text-align: center;
+}
+h1, h2, h3 {
+  text-align: center;
+}
+
+/* === Buttons === */
+button {
+  padding: 10px 20px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s;
+}
+button:hover {
+  background-color: var(--hover-color);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+.diffBtn, .symbolBtn {
+  padding: 10px 16px;
+  font-weight: bold;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.diffBtn:hover, .symbolBtn:hover {
+  background-color: var(--hover-color);
+  transform: scale(1.05);
+}
+.symbolBtn.selected {
+  border-color: var(--glow-bright);
+  box-shadow: 0 0 10px var(--glow-bright);
+}
+
+/* === Dark Mode Toggle === */
+#darkModeToggle {
+  margin-top: 20px;
+}
+
+/* === Inputs === */
+input {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: 4px;
+  transition: color 0.3s;
+}
+.dark input {
+  color: black;
+}
+
+/* === Glow Effect === */
+.glow {
+  box-shadow: 0 0 20px 5px var(--glow-bright);
+}
+.dark .glow {
+  box-shadow: 0 0 20px 5px var(--glow-dark);
+}
+
+/* === Game Board === */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 4rem);
+  grid-gap: 0.5rem;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  margin: 0 auto;
+}
+.cell {
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+.cell:hover {
+  background-color: var(--hover-color);
+}
+
+/* === Scoreboard === */
+#scoreBoard {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/* === Modal === */
+#gameModal, #modeInstructionsModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s;
+}
+#gameModal.show, #modeInstructionsModal.show {
+  visibility: visible;
+  opacity: 1;
+}
+.modal-content {
+  background-color: var(--bg-color);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: var(--text-color);
+}
+#modalCloseBtn, #instructionCloseBtn {
+  margin-top: 10px;
+}
+
+/* === Turn Timer Styling === */
+#turnTimer {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 10px 0;
+  color: var(--text-color);
+}
+
+/* === Timer for Blitz Mode === */
+#timer {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 10px 0;
+  color: var(--text-color);
+}
+.timer-warning {
+  color: red;
+  font-weight: bolder;
+  animation: blink 1s step-start 0s infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* === Stats & Achievements Boxes === */
+.stats-box, .achievements-box {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.stats-box {
+  background-color: #f0f4f8;
+}
+.achievements-box {
+  background-color: #fff8dc;
+}
+.dark .stats-box {
+  background-color: #2c3e50;
+}
+.dark .achievements-box {
+  background-color: #3e3e3e;
+}
+
+/* === Animations === */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* === Responsive Design === */
+@media (max-width: 600px) {
+  .board {
+    grid-template-columns: repeat(3, 3rem);
+  }
+  .cell {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+  }
+  button {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+}
+
+/* === Theme Overrides for tic.html === */
+.theme-classic {
+  background-color: #f9fafb;
+  color: #111827;
+}
+html.dark .theme-classic {
+  background-color: #000;
+  color: white;
+}
+.theme-space {
+  background: linear-gradient(to right, #1e3a8a, #3b82f6);
+  color: #fff;
+}
+.theme-candy {
+  background: linear-gradient(to right, #ec4899, #facc15);
+  color: #1f2937;
+}
