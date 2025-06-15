@@ -252,11 +252,11 @@ input {
 
 /* === Theme Overrides for tic.html === */
 .theme-classic {
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: white;
+  color: black;
 }
 html.dark .theme-classic {
-  background-color: #000;
+  background-color: black;
   color: white;
 }
 .theme-space {
