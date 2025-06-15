@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tac.css">
+  <style>
+    .glow { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+    .pulse { animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="full-screen flex-center">
+  <div class="container space-y-6">
+    <div id="playerInfo" class="text-xl"></div>
+    <div id="scoreBoard" class="text-xl"></div>
+    <div id="gameBoard" class="board glow"></div>
+    <div id="turnTimer" class="text-red-500 font-bold" style="display: none;">Turn Time: <span id="timerCount">10</span>s</div>
+    <div class="space-x-2">
+      <label for="themeSelector">Theme:</label>
+      <select id="themeSelector" class="px-2 py-1 border rounded">
+        <option value="default">Classic</option>
+        <option value="space">Space</option>
+        <option value="candy">Candy</option>
+      </select>
+    </div>
+    <div>
+      <label for="modeSelector">Game Mode:</label>
+      <select id="modeSelector" class="px-2 py-1 border rounded">
+        <option value="classic">Classic</option>
+        <option value="blitz">Blitz</option>
+        <option value="tournament">Tournament</option>
+      </select>
+    </div>
+    <div class="text-sm text-gray-600 space-y-1">
+      <p>Total Games: <span id="totalGames">0</span></p>
+      <p>Wins: <span id="wins">0</span>, Losses: <span id="losses">0</span>, Draws: <span id="draws">0</span></p>
+    </div>
+    <div class="text-sm bg-yellow-100 p-3 rounded">
+      <strong>Achievements:</strong>
+      <ul class="list-disc list-inside">
+        <li>🏆 First Win</li>
+        <li>🔥 Win Streak</li>
+        <li>💡 Played All Modes</li>
+      </ul>
+    </div>
+    <div class="space-x-4">
+      <button id="resetBtn">Reset</button>
+      <button id="backToMenuBtn">Back to Menu</button>
+    </div>
+  </div>
+  <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="modal-content bg-white p-6 rounded shadow-lg">
+      <h2 id="modalMessage" class="text-2xl mb-4"></h2>
+      <button id="modalCloseBtn" class="px-4 py-2 bg-green-500 text-white rounded">OK</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById("themeSelector").addEventListener("change", e => {
+      document.body.setAttribute("data-theme", e.target.value);
+    });
+    document.getElementById("totalGames").textContent = localStorage.getItem("totalGames") || 0;
+    document.getElementById("wins").textContent = localStorage.getItem("wins") || 0;
+    document.getElementById("losses").textContent = localStorage.getItem("losses") || 0;
+    document.getElementById("draws").textContent = localStorage.getItem("draws") || 0;
+  </script>
+  <script src="toe.js"></script>
+</body>
+</html>
