@@ -6,6 +6,7 @@ const urlsToCache = [
   "/achievement.html",
   "/toe.js",
   "/tac.css",
+  "/exit.html",
   "/assets/logo.png"
 ];
 
