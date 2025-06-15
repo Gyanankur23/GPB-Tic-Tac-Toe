@@ -7,36 +7,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const wins = localStorage.getItem("wins") || 0;
     const losses = localStorage.getItem("losses") || 0;
     const draws = localStorage.getItem("draws") || 0;
-    if (document.getElementById("totalGames")) document.getElementById("totalGames").textContent = total;
-    if (document.getElementById("wins")) document.getElementById("wins").textContent = wins;
-    if (document.getElementById("losses")) document.getElementById("losses").textContent = losses;
-    if (document.getElementById("draws")) document.getElementById("draws").textContent = draws;
-    // Also update stats on exit page if present.
-    if (document.getElementById("exitGames")) document.getElementById("exitGames").textContent = total;
-    if (document.getElementById("exitWins")) document.getElementById("exitWins").textContent = wins;
-    if (document.getElementById("exitLosses")) document.getElementById("exitLosses").textContent = losses;
-    if (document.getElementById("exitDraws")) document.getElementById("exitDraws").textContent = draws;
+
+    const ids = ["totalGames", "wins", "losses", "draws", "exitGames", "exitWins", "exitLosses", "exitDraws"];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (id.includes("total")) el.textContent = total;
+        if (id.includes("Wins") || id === "wins") el.textContent = wins;
+        if (id.includes("Losses") || id === "losses") el.textContent = losses;
+        if (id.includes("Draws") || id === "draws") el.textContent = draws;
+      }
+    });
   };
   updateStats();
 
   // Dark Mode Toggle
-
   const darkToggleElem = document.getElementById("darkModeToggle");
-
-  // ✅ Apply dark mode immediately based on saved localStorage value
   if (localStorage.getItem("darkMode") === "true") {
     document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark"); // Ensure light mode is applied by default
   }
-
   if (darkToggleElem) {
     darkToggleElem.addEventListener("click", () => {
       document.documentElement.classList.toggle("dark");
       localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
     });
   }
-});
 
   // Theme Selector
   const themeSelector = document.getElementById("themeSelector");
@@ -57,15 +52,18 @@ document.addEventListener("DOMContentLoaded", () => {
    **************************/
   const playFriendBtn = document.getElementById("playFriendBtn");
   const playComputerBtn = document.getElementById("playComputerBtn");
+
   if (playFriendBtn && playComputerBtn) {
     playFriendBtn.addEventListener("click", () => {
       document.getElementById("friendSetup").classList.remove("hidden");
       document.getElementById("computerSetup").classList.add("hidden");
     });
+
     playComputerBtn.addEventListener("click", () => {
       document.getElementById("computerSetup").classList.remove("hidden");
       document.getElementById("friendSetup").classList.add("hidden");
     });
+
     let selectedDiff = "easy";
     document.querySelectorAll(".diffBtn").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -74,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedDiff = btn.dataset.diff;
       });
     });
+
     let selectedSymbol = "X";
     document.querySelectorAll(".symbolBtn").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -82,15 +81,15 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedSymbol = btn.dataset.symbol;
       });
     });
+
     document.getElementById("startFriendGame")?.addEventListener("click", () => {
       sessionStorage.setItem("playerMode", "friend");
-      const p1 = (document.getElementById("player1").value || "Player 1").trim();
-      const p2 = (document.getElementById("player2").value || "Player 2").trim();
-      sessionStorage.setItem("player1", p1);
-      sessionStorage.setItem("player2", p2);
+      sessionStorage.setItem("player1", document.getElementById("player1").value.trim() || "Player 1");
+      sessionStorage.setItem("player2", document.getElementById("player2").value.trim() || "Player 2");
       sessionStorage.setItem("gameMode", document.getElementById("friendModeSelector").value);
       window.location.href = "game.html";
     });
+
     document.getElementById("startComputerGame")?.addEventListener("click", () => {
       sessionStorage.setItem("playerMode", "computer");
       sessionStorage.setItem("difficulty", selectedDiff);
@@ -98,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sessionStorage.setItem("gameMode", document.getElementById("modeSelector").value);
       window.location.href = "game.html";
     });
+
     document.getElementById("backBtn")?.addEventListener("click", () => {
       window.location.href = "tic.html";
     });
@@ -106,29 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
   /**************************
    * GAME PAGE FUNCTIONALITY
    **************************/
- 
-// Function to start the game properly
-function startGame() {
-  gameActive = true;
-  resetBoard(); // Ensures board resets and game starts fresh
-}
+  const board = document.getElementById("gameBoard");
+  if (!board) return;
 
-// Ensure startGameBtn triggers game start
-const startGameBtn = document.getElementById("startGameBtn");
-
-if (startGameBtn) {
-  startGameBtn.addEventListener("click", () => {
-    startGame();
-  });
-}
-
-// Game board setup
-const board = document.getElementById("gameBoard");
-
-if (board) {
-  // Create the board (9 cells) if not created
   let cells = Array.from(board.getElementsByClassName("cell"));
-
   if (cells.length === 0) {
     for (let i = 0; i < 9; i++) {
       const cell = document.createElement("div");
@@ -140,12 +121,10 @@ if (board) {
   }
 
   let gameActive = true;
-  let turnTimer = 10; // Timer for Blitz mode
+  let turnTimer = 10;
   const timerCountEl = document.getElementById("timerCount");
-
-  // Retrieve game mode and player mode settings
-  let gameModeStored = sessionStorage.getItem("gameMode") || "classic";
-  let mode = sessionStorage.getItem("playerMode") || "friend";
+  const gameModeStored = sessionStorage.getItem("gameMode") || "classic";
+  const mode = sessionStorage.getItem("playerMode") || "friend";
 
   let humanSymbol = "X";
   let computerSymbol = "O";
@@ -157,43 +136,38 @@ if (board) {
   if (mode === "computer") {
     humanSymbol = sessionStorage.getItem("playerSymbol") || "X";
     computerSymbol = humanSymbol === "X" ? "O" : "X";
-
-    // If human chooses "O", computer (as "X") starts
     currentPlayer = humanSymbol === "O" ? computerSymbol : humanSymbol;
   }
 
-  // Display player info
   const playerInfo = document.getElementById("playerInfo");
   if (playerInfo) {
-    if (mode === "friend") {
-      playerInfo.textContent = `${p1} (X) vs ${p2} (O) - ${p1}'s Turn`;
-    } else {
-      playerInfo.textContent =
-        humanSymbol === "O"
-          ? `Computer (${computerSymbol}) - Starting First`
-          : `You (${humanSymbol}) vs Computer (${computerSymbol}) - Your Turn`;
-    }
+    playerInfo.textContent =
+      mode === "friend"
+        ? `${p1} (X) vs ${p2} (O) - ${p1}'s Turn`
+        : humanSymbol === "O"
+        ? `Computer (${computerSymbol}) - Starting First`
+        : `You (${humanSymbol}) vs Computer (${computerSymbol}) - Your Turn`;
   }
 
-  // Tournament mode settings
-  let tournamentWinsHuman = 0,
-    tournamentWinsComputer = 0,
-    currentRound = 1;
+  let tournamentWinsHuman = 0, tournamentWinsComputer = 0, currentRound = 1;
   const maxRounds = 3;
 
-  // Show timer only in Blitz mode
-  if (gameModeStored === "blitz") {
-    if (timerCountEl && timerCountEl.parentElement)
-      timerCountEl.parentElement.style.display = "block";
-  } else {
-    if (timerCountEl && timerCountEl.parentElement)
-      timerCountEl.parentElement.style.display = "none";
-  }
+  const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6],
+  ];
 
-  // Function to start Blitz timer
   let timerInterval;
+  const resetTurnTimer = () => {
+    if (gameModeStored === "blitz") {
+      turnTimer = 10;
+      if (timerCountEl) timerCountEl.textContent = turnTimer;
+    }
+  };
+
   const startBlitzTimer = () => {
-    if (timerInterval) clearInterval(timerInterval);
+    clearInterval(timerInterval);
     resetTurnTimer();
     timerInterval = setInterval(() => {
       if (!gameActive) {
@@ -210,47 +184,41 @@ if (board) {
     }, 1000);
   };
 
-  // Reset turn timer to 10 seconds
-  const resetTurnTimer = () => {
-    if (gameModeStored === "blitz") {
-      turnTimer = 10;
-      if (timerCountEl) timerCountEl.textContent = turnTimer;
-    }
-  };
-
-  // Start Blitz timer if in Blitz mode
-  if (gameModeStored === "blitz") {
-    startBlitzTimer();
-  }
-
-  // Winning patterns for Tic Tac Toe
-  const winPatterns = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  // Function to check for a win
   const checkWin = () => {
     for (let pattern of winPatterns) {
       const [a, b, c] = pattern;
-      if (
-        cells[a].textContent &&
-        cells[a].textContent === cells[b].textContent &&
-        cells[a].textContent === cells[c].textContent
-      ) {
+      if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
         return cells[a].textContent;
       }
     }
     return null;
   };
 
-  // Function for tournament mode (best-of-3 rounds)
+  const endGame = (message) => {
+    if (gameModeStored === "tournament") {
+      tournamentModeCheckAndEnd(message);
+      return;
+    }
+    gameActive = false;
+    const modal = document.getElementById("gameModal");
+    if (modal) {
+      document.getElementById("modalMessage").textContent = message;
+      modal.classList.add("show");
+    }
+
+    let total = parseInt(localStorage.getItem("totalGames") || "0") + 1;
+    localStorage.setItem("totalGames", total);
+
+    if (message.includes("Wins")) {
+      localStorage.setItem(message.startsWith(humanSymbol) ? "wins" : "losses",
+        parseInt(localStorage.getItem(message.startsWith(humanSymbol) ? "wins" : "losses") || "0") + 1);
+    } else if (message.includes("Draw")) {
+      localStorage.setItem("draws", parseInt(localStorage.getItem("draws") || "0") + 1);
+    }
+
+    updateStats();
+  };
+
   const tournamentModeCheckAndEnd = (message) => {
     if (gameModeStored !== "tournament") return false;
 
@@ -261,7 +229,7 @@ if (board) {
       modal.classList.add("show");
     }
 
-    if (message.includes("Wins") || message.includes("Time's Up")) {
+    if (message.includes("Wins")) {
       if (mode === "computer") {
         message.startsWith(humanSymbol) ? tournamentWinsHuman++ : tournamentWinsComputer++;
       } else {
@@ -276,254 +244,135 @@ if (board) {
         if (gameModeStored === "blitz") startBlitzTimer();
       }, 1500);
     } else {
-      const finalMessage =
-        tournamentWinsHuman > tournamentWinsComputer
-          ? "Tournament Over! You win!"
-          : tournamentWinsHuman < tournamentWinsComputer
-          ? "Tournament Over! Computer wins!"
-          : "Tournament Over! It's a draw!";
-
-      if (modal) document.getElementById("modalMessage").textContent = finalMessage;
+      const finalMsg = tournamentWinsHuman > tournamentWinsComputer
+        ? "Tournament Over! You win!"
+        : tournamentWinsHuman < tournamentWinsComputer
+        ? "Tournament Over! Computer wins!"
+        : "Tournament Over! It's a draw!";
+      if (modal) document.getElementById("modalMessage").textContent = finalMsg;
       updateStats();
     }
     return true;
   };
 
-  // Function to end the game
-  const endGame = (message) => {
-    if (gameModeStored === "tournament") {
-      tournamentModeCheckAndEnd(message);
-      return;
-    }
-    gameActive = false;
-    const modal = document.getElementById("gameModal");
-    if (modal) {
-      document.getElementById("modalMessage").textContent = message;
-      modal.classList.add("show");
-    }
-    let total = parseInt(localStorage.getItem("totalGames") || "0") + 1;
-    localStorage.setItem("totalGames", total);
-
-    if (message.includes("Wins")) {
-      localStorage.setItem(message.startsWith(humanSymbol) ? "wins" : "losses", parseInt(localStorage.getItem(message.startsWith(humanSymbol) ? "wins" : "losses") || "0") + 1);
-    } else if (message.includes("Draw")) {
-      localStorage.setItem("draws", parseInt(localStorage.getItem("draws") || "0") + 1);
-    }
-    updateStats();
-  };
-
-  // Function to reset the board
   const resetBoard = () => {
-    cells.forEach((cell) => (cell.textContent = ""));
+    cells.forEach(c => c.textContent = "");
     gameActive = true;
-    resetTurnTimer();
-    if (gameModeStored === "blitz") startBlitzTimer();
     const modal = document.getElementById("gameModal");
     if (modal) modal.classList.remove("show");
+    if (gameModeStored === "blitz") startBlitzTimer();
   };
-}
 
-    /************ COMPUTER MOVE STRATEGIES ************/
-    const getAvailableIndices = () => {
-      return cells.reduce((acc, cell, idx) => {
-        if (!cell.textContent) acc.push(idx);
-        return acc;
-      }, []);
-    };
+  const startGameBtn = document.getElementById("startGameBtn");
+  if (startGameBtn) {
+    startGameBtn.addEventListener("click", () => {
+      gameActive = true;
+      resetBoard();
+    });
+  }
 
-    const computerMoveEasy = () => {
-      let available = getAvailableIndices();
-      const weakIndices = [1, 3, 5, 7];
-      const weakAvailable = available.filter(i => weakIndices.includes(i));
-      if (weakAvailable.length > 0)
-        return weakAvailable[Math.floor(Math.random() * weakAvailable.length)];
-      return available[Math.floor(Math.random() * available.length)];
-    };
+  const getAvailableIndices = () => {
+    return cells.reduce((acc, c, i) => (!c.textContent ? [...acc, i] : acc), []);
+  };
 
-    const computerMoveMedium = () => {
-      let available = getAvailableIndices();
-      if (available.includes(4)) return 4;
-      const corners = [0, 2, 6, 8];
-      const availableCorners = available.filter(i => corners.includes(i));
-      if (availableCorners.length > 0)
-        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-      return available[Math.floor(Math.random() * available.length)];
-    };
+  const computerMoveEasy = () => {
+    const avail = getAvailableIndices();
+    const weak = [1, 3, 5, 7].filter(i => avail.includes(i));
+    return weak.length ? weak[Math.floor(Math.random() * weak.length)] : avail[Math.floor(Math.random() * avail.length)];
+  };
 
-    const getBoardArray = () => {
-      return cells.map(cell => cell.textContent);
-    };
+  const computerMoveMedium = () => {
+    const avail = getAvailableIndices();
+    if (avail.includes(4)) return 4;
+    const corners = [0, 2, 6, 8].filter(i => avail.includes(i));
+    return corners.length ? corners[Math.floor(Math.random() * corners.length)] : avail[Math.floor(Math.random() * avail.length)];
+  };
 
-    const checkWinnerForMinimax = (board, player) => {
-      for (let pattern of winPatterns) {
-        if (
-          board[pattern[0]] === player &&
-          board[pattern[1]] === player &&
-          board[pattern[2]] === player
-        ) {
-          return true;
-        }
-      }
-      return false;
-    };
+  const getBoardArray = () => cells.map(c => c.textContent);
 
-    const minimax = (board, currentTurn) => {
-      const availableSpots = board.reduce((acc, el, idx) => {
-        if (el === "") acc.push(idx);
-        return acc;
-      }, []);
-      if (checkWinnerForMinimax(board, computerSymbol)) {
-        return { score: 10 };
-      } else if (checkWinnerForMinimax(board, humanSymbol)) {
-        return { score: -10 };
-      } else if (availableSpots.length === 0) {
-        return { score: 0 };
-      }
-      let moves = [];
-      for (let i = 0; i < availableSpots.length; i++) {
-        let move = {};
-        move.index = availableSpots[i];
-        board[availableSpots[i]] = currentTurn;
-        if (currentTurn === computerSymbol) {
-          let result = minimax(board, humanSymbol);
-          move.score = result.score;
-        } else {
-          let result = minimax(board, computerSymbol);
-          move.score = result.score;
-        }
-        board[availableSpots[i]] = "";
-        moves.push(move);
-      }
-      let bestMove;
-      if (currentTurn === computerSymbol) {
-        let bestScore = -Infinity;
-        for (let m of moves) {
-          if (m.score > bestScore) {
-            bestScore = m.score;
-            bestMove = m;
-          }
-        }
-      } else {
-        let bestScore = Infinity;
-        for (let m of moves) {
-          if (m.score < bestScore) {
-            bestScore = m.score;
-            bestMove = m;
-          }
-        }
-      }
-      return bestMove;
-    };
+  const checkWinnerForMinimax = (b, p) => winPatterns.some(pat => pat.every(i => b[i] === p));
 
-    const computerMoveHard = () => {
-      const boardArray = getBoardArray();
-      const best = minimax(boardArray, computerSymbol);
-      return best.index;
-    };
+  const minimax = (b, turn) => {
+    const avail = b.map((v, i) => v === "" ? i : null).filter(i => i !== null);
+    if (checkWinnerForMinimax(b, computerSymbol)) return { score: 10 };
+    if (checkWinnerForMinimax(b, humanSymbol)) return { score: -10 };
+    if (avail.length === 0) return { score: 0 };
 
-    const makeComputerMove = () => {
-      if (!gameActive) return;
-      let diff = sessionStorage.getItem("difficulty") || "easy";
-      let chosenIndex;
-      if (diff === "easy") {
-        chosenIndex = computerMoveEasy();
-      } else if (diff === "medium") {
-        chosenIndex = computerMoveMedium();
-      } else if (diff === "hard") {
-        chosenIndex = computerMoveHard();
-      }
-      if (typeof chosenIndex !== "undefined" && cells[chosenIndex] && !cells[chosenIndex].textContent) {
-        cells[chosenIndex].textContent = computerSymbol;
-      }
-      let winner = checkWin();
-      if (winner) {
-        endGame(`${winner} Wins!`);
-        return;
-      }
-      if (cells.every(c => c.textContent)) {
-        endGame("It's a Draw!");
-        return;
-      }
-      if (document.getElementById("playerInfo"))
-        document.getElementById("playerInfo").textContent = "Your Turn";
-      if (gameModeStored === "blitz") resetTurnTimer();
-    };
-
-    /************* HANDLING MOVES **************/
-    const handleFriendMove = (cell) => {
-      if (!gameActive || cell.textContent) return;
-      cell.textContent = currentPlayer;
-      let winner = checkWin();
-      if (winner) {
-        const winMsg = mode === "friend" ? (winner === "X" ? `${p1} Wins!` : `${p2} Wins!`) : `${winner} Wins!`;
-        endGame(winMsg);
-        return;
-      }
-      if (cells.every(c => c.textContent)) {
-        endGame("It's a Draw!");
-        return;
-      }
-      currentPlayer = currentPlayer === "X" ? "O" : "X";
-      if (document.getElementById("playerInfo"))
-        document.getElementById("playerInfo").textContent = currentPlayer === "X" ? `${p1}'s Turn` : `${p2}'s Turn`;
-      if (gameModeStored === "blitz") resetTurnTimer();
-    };
-
-    const handleHumanMove = (cell) => {
-      if (!gameActive || cell.textContent) return;
-      cell.textContent = humanSymbol;
-      let winner = checkWin();
-      if (winner) {
-        endGame(`${humanSymbol} Wins!`);
-        return;
-      }
-      if (cells.every(c => c.textContent)) {
-        endGame("It's a Draw!");
-        return;
-      }
-      if (document.getElementById("playerInfo"))
-        document.getElementById("playerInfo").textContent = "Computer's Turn";
-      if (gameModeStored === "blitz") resetTurnTimer();
-      setTimeout(() => { makeComputerMove(); }, 500);
-    };
-
-    cells.forEach(cell => {
-      cell.addEventListener("click", () => {
-        if (!gameActive) return;
-        if (mode === "friend") {
-          handleFriendMove(cell);
-        } else if (mode === "computer") {
-          if (!cell.textContent) {
-            handleHumanMove(cell);
-          }
-        }
-      });
+    const moves = avail.map(i => {
+      const move = { index: i };
+      b[i] = turn;
+      move.score = minimax(b, turn === computerSymbol ? humanSymbol : computerSymbol).score;
+      b[i] = "";
+      return move;
     });
 
-    const resetBtn = document.getElementById("resetBtn");
-    if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
-        // Clear any previous timer interval before resetting.
-        if (timerInterval) clearInterval(timerInterval);
-        resetBoard();
-        if (gameModeStored === "blitz") startBlitzTimer();
-      });
+    return turn === computerSymbol
+      ? moves.reduce((best, m) => m.score > best.score ? m : best)
+      : moves.reduce((best, m) => m.score < best.score ? m : best);
+  };
+
+  const computerMoveHard = () => minimax(getBoardArray(), computerSymbol).index;
+
+  const makeComputerMove = () => {
+    if (!gameActive) return;
+    const diff = sessionStorage.getItem("difficulty") || "easy";
+    const index = diff === "easy" ? computerMoveEasy() : diff === "medium" ? computerMoveMedium() : computerMoveHard();
+    if (index !== undefined && !cells[index].textContent) {
+      cells[index].textContent = computerSymbol;
+      const winner = checkWin();
+      if (winner) return endGame(`${winner} Wins!`);
+      if (cells.every(c => c.textContent)) return endGame("It's a Draw!");
+      if (playerInfo) playerInfo.textContent = "Your Turn";
+      if (gameModeStored === "blitz") resetTurnTimer();
     }
-    const modalCloseBtn = document.getElementById("modalCloseBtn");
-    if (modalCloseBtn) {
-      modalCloseBtn.addEventListener("click", () => {
-        const modal = document.getElementById("gameModal");
-        if (modal) modal.classList.remove("show");
-      });
-    }
-    const backToMenuBtn = document.getElementById("backToMenuBtn");
-    if (backToMenuBtn) {
-      backToMenuBtn.addEventListener("click", () => {
-        window.location.href = "tic.html";
-      });
-    }
-    if (mode === "computer" && humanSymbol === "O" && gameActive) {
-      setTimeout(() => { makeComputerMove(); }, 500);
-    }
-  } // end if board exists
+  };
+
+  const handleFriendMove = (cell) => {
+    if (!gameActive || cell.textContent) return;
+    cell.textContent = currentPlayer;
+    const winner = checkWin();
+    if (winner) return endGame(winner === "X" ? `${p1} Wins!` : `${p2} Wins!`);
+    if (cells.every(c => c.textContent)) return endGame("It's a Draw!");
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    if (playerInfo) playerInfo.textContent = currentPlayer === "X" ? `${p1}'s Turn` : `${p2}'s Turn`;
+    if (gameModeStored === "blitz") resetTurnTimer();
+  };
+
+  const handleHumanMove = (cell) => {
+    if (!gameActive || cell.textContent) return;
+    cell.textContent = humanSymbol;
+    const winner = checkWin();
+    if (winner) return endGame(`${humanSymbol} Wins!`);
+    if (cells.every(c => c.textContent)) return endGame("It's a Draw!");
+    if (playerInfo) playerInfo.textContent = "Computer's Turn";
+    if (gameModeStored === "blitz") resetTurnTimer();
+    setTimeout(makeComputerMove, 500);
+  };
+
+  cells.forEach(cell => {
+    cell.addEventListener("click", () => {
+      if (mode === "friend") handleFriendMove(cell);
+      else if (mode === "computer") handleHumanMove(cell);
+    });
+  });
+
+  document.getElementById("resetBtn")?.addEventListener("click", () => {
+    clearInterval(timerInterval);
+    resetBoard();
+    if (gameModeStored === "blitz") startBlitzTimer();
+  });
+
+  document.getElementById("modalCloseBtn")?.addEventListener("click", () => {
+    document.getElementById("gameModal")?.classList.remove("show");
+  });
+
+  document.getElementById("backToMenuBtn")?.addEventListener("click", () => {
+    window.location.href = "tic.html";
+  });
+
+  if (mode === "computer" && humanSymbol === "O" && gameActive) {
+    setTimeout(makeComputerMove, 500);
+  }
+
+  if (gameModeStored === "blitz" && gameActive) startBlitzTimer();
 });
