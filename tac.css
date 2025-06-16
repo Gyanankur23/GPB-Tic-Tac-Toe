@@ -25,7 +25,7 @@
 }
 
 /* === Dark Mode Overrides === */
-.dark {
+html.dark {
   --bg-color: #1f2937;
   --text-color: #f9fafb;
   --border-color: #f9fafb;
@@ -108,7 +108,7 @@ input {
   transition: color 0.3s;
 }
 .dark input {
-  color: black;
+  color: white;
 }
 
 /* === Glow Effect === */
@@ -232,38 +232,4 @@ input {
 }
 .pulse {
   animation: pulse 1.5s infinite;
-}
-
-/* === Responsive Design === */
-@media (max-width: 600px) {
-  .board {
-    grid-template-columns: repeat(3, 3rem);
-  }
-  .cell {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.5rem;
-  }
-  button {
-    font-size: 14px;
-    padding: 8px 14px;
-  }
-}
-
-/* === Theme Overrides for tic.html === */
-.theme-classic {
-  background-color: white;
-  color: black;
-}
-html.dark .theme-classic {
-  background-color: black;
-  color: white;
-}
-.theme-space {
-  background: linear-gradient(to right, #1e3a8a, #3b82f6);
-  color: #fff;
-}
-.theme-candy {
-  background: linear-gradient(to right, #ec4899, #facc15);
-  color: #1f2937;
 }
