@@ -20,18 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
   updateStats();
 
   // Dark Mode Toggle
-  const darkToggleElem = document.getElementById("darkModeToggle");
-  if (darkToggleElem) {
-    darkToggleElem.addEventListener("click", () => {
-      document.documentElement.classList.toggle("dark");
-      localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
-    });
-    if (localStorage.getItem("darkMode") === "true") {
-      document.documentElement.classList.add("dark");
-    }
-else {
-    document.documentElement.classList.remove("dark"); // Default to light mode
-  }
+const darkToggleElem = document.getElementById("darkModeToggle");
+
+// ✅ Ensure dark mode is applied correctly when the page loads
+if (localStorage.getItem("darkMode") === "true") {
+  document.documentElement.classList.add("dark");
+} else {
+  document.documentElement.classList.remove("dark"); // Default to light mode
+}
+
+// ✅ Toggle dark mode when button is clicked
+if (darkToggleElem) {
+  darkToggleElem.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+    localStorage.setItem("darkMode", document.documentElement.classList.contains("dark"));
+  });
+}
 
   // Theme Selector
   const themeSelector = document.getElementById("themeSelector");
