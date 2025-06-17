@@ -221,8 +221,9 @@ input::placeholder {
   color: white; /* ✅ Ensuring text stays visible */
 }
 .achievements-box {
-  background-color: black;
-  color: white; /* ✅ Fixed visibility issue */
+  background-color: yellow !important;
+  color: black !important;
+} /* ✅ Fixed visibility issue */
 }
 .dark .stats-box {
   background-color: dark gray;
