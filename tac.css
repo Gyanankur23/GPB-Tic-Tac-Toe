@@ -26,8 +26,8 @@
 
 /* === Dark Mode Overrides === */
 .dark {
-  --bg-color: #1f2937;
-  --text-color: #f9fafb;
+  --bg-color: black;
+  --text-color: white;
   --border-color: #ffffff;
   --hover-color: #444;
   --glow-bright: #f9fafb;
@@ -108,12 +108,12 @@ input {
   transition: color 0.3s;
 }
 .dark input {
-  background-color: #2c2c2c;
+  background-color: black;
   color: white; /* ✅ Updated color for dark mode visibility */
   border: 1px solid #ccc;
 }
 input::placeholder {
-  color: #777; /* ✅ Made placeholder text darker for readability */
+  color: black; /* ✅ Made placeholder text darker for readability */
 }
 
 /* === Glow Effect === */
@@ -217,19 +217,19 @@ input::placeholder {
   font-size: 0.9rem;
 }
 .stats-box {
-  background-color: #f0f4f8;
-  color: black; /* ✅ Ensuring text stays visible */
+  background-color: black;
+  color: white; /* ✅ Ensuring text stays visible */
 }
 .achievements-box {
-  background-color: #fff8dc;
-  color: black; /* ✅ Fixed visibility issue */
+  background-color: black;
+  color: white; /* ✅ Fixed visibility issue */
 }
 .dark .stats-box {
-  background-color: #2c3e50;
+  background-color: dark gray;
   color: white; /* ✅ Ensuring text is visible */
 }
 .dark .achievements-box {
-  background-color: #3e3e3e;
+  background-color: dark gray;
   color: white; /* ✅ Text will now be visible in dark mode */
 }
 
