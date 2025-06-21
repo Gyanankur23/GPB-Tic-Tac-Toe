@@ -19,37 +19,40 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   updateStats();
 
-  // Dark Mode Toggle
-const darkToggleElem = document.getElementById("darkModeToggle");
+  // === Dark Mode Toggle ===
+const darkToggle = document.getElementById("darkModeToggle");
 
-// ✅ Ensure dark mode is applied correctly when the page loads
+// Apply dark mode from localStorage on load
 if (localStorage.getItem("darkMode") === "true") {
   document.documentElement.classList.add("dark");
 } else {
-  document.documentElement.classList.remove("dark"); // Default to light mode
+  document.documentElement.classList.remove("dark");
 }
 
-// ✅ Toggle dark mode when button is clicked
-if (darkToggleElem) {
-  darkToggleElem.addEventListener("click", () => {
+// Toggle dark mode on button click
+if (darkToggle) {
+  darkToggle.addEventListener("click", () => {
     const isDark = document.documentElement.classList.toggle("dark");
-localStorage.setItem("darkMode", isDark);
+    localStorage.setItem("darkMode", isDark);
   });
 }
 
-  // Theme Selector
-  const themeSelector = document.getElementById("themeSelector");
-  if (themeSelector) {
-    themeSelector.addEventListener("change", () => {
-      document.body.setAttribute("data-theme", themeSelector.value);
-      localStorage.setItem("theme", themeSelector.value);
-    });
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      document.body.setAttribute("data-theme", savedTheme);
-      themeSelector.value = savedTheme;
-    }
-  }
+// === Theme Selector Handling ===
+const themeSelector = document.getElementById("themeSelector");
+
+// Load saved theme and apply it to <body>
+const savedTheme = localStorage.getItem("theme") || "classic";
+document.body.className = "full-screen flex-center theme-" + savedTheme;
+if (themeSelector) themeSelector.value = savedTheme;
+
+// Update theme on change
+if (themeSelector) {
+  themeSelector.addEventListener("change", () => {
+    const selected = themeSelector.value;
+    document.body.className = "full-screen flex-center theme-" + selected;
+    localStorage.setItem("theme", selected);
+  });
+}
 
   /**************************
    * PLAY PAGE FUNCTIONALITY
