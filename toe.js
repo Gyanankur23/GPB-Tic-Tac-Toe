@@ -32,8 +32,7 @@ if (localStorage.getItem("darkMode") === "true") {
 // ✅ Toggle dark mode when button is clicked
 if (darkToggleElem) {
   darkToggleElem.addEventListener("click", () => {
-    document.documentElement.classList.toggle("dark");
-   const isDark = document.documentElement.classList.toggle("dark");
+    const isDark = document.documentElement.classList.toggle("dark");
 localStorage.setItem("darkMode", isDark);
   });
 }
