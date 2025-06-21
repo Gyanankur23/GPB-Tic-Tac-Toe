@@ -46,6 +46,21 @@
 </style>
 </head>
 <body class="full-screen flex-center">
+<script>
+  // === Restore Theme and Dark Mode Early ===
+  const theme = localStorage.getItem("theme") || "classic";
+  const isDark = localStorage.getItem("darkMode") === "true";
+
+  // Set theme class on <body>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.className += " theme-" + theme;
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  });
+</script>
   <div class="container space-y-6">
     <div id="playerInfo" class="text-xl"></div>
     <div id="scoreBoard" class="text-xl"></div>
