@@ -10,7 +10,7 @@
 
 /* === Classic Theme === */
 .theme-classic {
-  --bg-color: #f9fafb;
+  --bg-color: linear-gradient(135deg, #f9fafb, #ffe29f, #ffa8a8, #a18cd1);
   --text-color: #111827;
 }
 html.dark .theme-classic {
