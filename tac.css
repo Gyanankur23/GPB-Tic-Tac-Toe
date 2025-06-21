@@ -2,7 +2,7 @@
 :root {
   --bg-color: white;
   --text-color: black;
-  --border-color: #000;
+  --border-color: black;
   --hover-color: #eeeeee;
   --glow-bright: orange;
   --glow-dark: blue;
@@ -28,7 +28,7 @@
 .dark {
   --bg-color: black;
   --text-color: white;
-  --border-color: #ffffff;
+  --border-color: white;
   --hover-color: #444;
   --glow-bright: #f9fafb;
   --glow-dark: #ccc;
@@ -99,21 +99,22 @@ button:hover {
 }
 
 /* === Inputs & Textboxes (Fixed Visibility) === */
-input {
+input,
+textarea {
   background-color: var(--bg-color);
-  color: var(--text-color);
+  color: black;
   border: 1px solid var(--border-color);
   padding: 8px;
   border-radius: 4px;
   transition: color 0.3s;
 }
-.dark input {
-  background-color: black;
-  color: white; /* ✅ Updated color for dark mode visibility */
-  border: 1px solid #ccc;
+input:focus,
+textarea:focus {
+  color: black;
 }
-input::placeholder {
-  color: black; /* ✅ Made placeholder text darker for readability */
+input::placeholder,
+textarea::placeholder {
+  color: black;
 }
 
 /* === Glow Effect === */
@@ -218,20 +219,26 @@ input::placeholder {
 }
 .stats-box {
   background-color: black;
-  color: white; /* ✅ Ensuring text stays visible */
+  color: white;
 }
+.dark .stats-box {
+  background-color: darkgray;
+  color: white;
+}
+
+/* Achievements Page Styling */
 .achievements-box {
   background-color: yellow !important;
   color: black !important;
-} /* ✅ Fixed visibility issue */
-}
-.dark .stats-box {
-  background-color: dark gray;
-  color: white; /* ✅ Ensuring text is visible */
 }
 .dark .achievements-box {
-  background-color: dark gray;
-  color: white; /* ✅ Text will now be visible in dark mode */
+  background-color: darkgray !important;
+  color: white !important;
+}
+/* Optional white section under achievements in custom themes */
+[data-theme="space"] .achievements-box .note,
+[data-theme="candy"] .achievements-box .note {
+  color: white !important;
 }
 
 /* === Animations === */
