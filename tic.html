@@ -8,7 +8,27 @@
   <link rel="stylesheet" href="tac.css">
   <link rel="manifest" href="manifest.json">
   <style>
-  
+  .theme-classic {
+    --bg-color: linear-gradient(135deg, #f9fafb, #ffe29f, #ffa8a8, #a18cd1);
+    --text-color: #111827;
+  }
+
+  .theme-space {
+    --bg-color: linear-gradient(to right, #1e3a8a, #3b82f6);
+    --text-color: #ffffff;
+  }
+
+  .theme-candy {
+    --bg-color: linear-gradient(to right, #ec4899, #facc15);
+    --text-color: #1f2937;
+  }
+
+  html.dark {
+    --border-color: #ffffff;
+    --hover-color: #444444;
+    --glow-bright: #f9fafb;
+    --glow-dark: #cccccc;
+  }
 
   body {
     background: var(--bg-color);
@@ -19,6 +39,7 @@
   .pulse {
     animation: pulse 2s infinite;
   }
+
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
