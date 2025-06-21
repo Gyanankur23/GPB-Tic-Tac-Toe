@@ -1,4 +1,4 @@
-/* === Base Light Theme === */
+/* === Base Theme Defaults === */
 :root {
   --bg-color: white;
   --text-color: black;
@@ -8,26 +8,30 @@
   --glow-dark: blue;
 }
 
-/* === Custom Themes === */
-[data-theme="space"] {
-  --bg-color: #0b0c10;
-  --text-color: #66fcf1;
-  --border-color: #45a29e;
-  --hover-color: #1f2833;
-  --glow-bright: #66fcf1;
+/* === Classic Theme === */
+.theme-classic {
+  --bg-color: #f9fafb;
+  --text-color: #111827;
 }
-[data-theme="candy"] {
-  --bg-color: #fff0f5;
-  --text-color: #ff1493;
-  --border-color: #ff69b4;
-  --hover-color: #ffe4e1;
-  --glow-bright: #ff69b4;
+html.dark .theme-classic {
+  --bg-color: #000;
+  --text-color: #fff;
 }
 
-/* === Dark Mode Overrides === */
+/* === Space Theme === */
+.theme-space {
+  --bg-color: linear-gradient(to right, #1e3a8a, #3b82f6);
+  --text-color: #fff;
+}
+
+/* === Candy Theme === */
+.theme-candy {
+  --bg-color: linear-gradient(to right, #ec4899, #facc15);
+  --text-color: #1f2937;
+}
+
+/* === Dark Mode Defaults === */
 .dark {
-  --bg-color: black;
-  --text-color: white;
   --border-color: white;
   --hover-color: #444;
   --glow-bright: #f9fafb;
@@ -36,7 +40,7 @@
 
 /* === Global Styles === */
 body {
-  background-color: var(--bg-color);
+  background: var(--bg-color);
   color: var(--text-color);
   margin: 0;
   font-family: sans-serif;
@@ -44,7 +48,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.5s, color 0.5s;
+  transition: background 0.5s, color 0.5s;
 }
 .full-screen {
   min-height: 100vh;
@@ -67,16 +71,16 @@ h1, h2, h3 {
 button {
   padding: 10px 20px;
   border: 2px solid var(--border-color);
-  background-color: var(--bg-color);
+  background: var(--bg-color);
   color: var(--text-color);
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 button:hover {
-  background-color: var(--hover-color);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  background: var(--hover-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 .diffBtn, .symbolBtn {
   padding: 10px 16px;
@@ -253,14 +257,4 @@ input::placeholder, textarea::placeholder {
     font-size: 14px;
     padding: 8px 14px;
   }
-}
-
-/* === Theme Overrides for tic.html === */
-.theme-classic {
-  background-color: white;
-  color: var(--text-color);
-}
-html.dark .theme-classic {
-  background-color: black;
-  color: var(--text-color);
 }
