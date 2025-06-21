@@ -47,6 +47,21 @@
 </style>
 </head>
 <body class="full-screen flex-center theme-classic">
+<script>
+  // === Restore Theme and Dark Mode Early ===
+  const theme = localStorage.getItem("theme") || "classic";
+  const isDark = localStorage.getItem("darkMode") === "true";
+
+  // Set theme class on <body>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.className += " theme-" + theme;
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  });
+</script>
   <div class="container space-y-6">
     <h1 id="mainTitle" class="text-5xl font-bold">GPB Tic Tac Toe</h1>
     <p class="text-lg">Made by Gyanankur Baruah</p>
