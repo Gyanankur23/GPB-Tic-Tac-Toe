@@ -8,19 +8,38 @@
   <link rel="stylesheet" href="tac.css">
   <link rel="manifest" href="manifest.json">
   <style>
-    .theme-classic { background-color: #f9fafb; color: #111827; }
-    .theme-space { background: linear-gradient(to right, #1e3a8a, #3b82f6); color: #fff; }
-    .theme-candy { background: linear-gradient(to right, #ec4899, #facc15); color: #1f2937; }
-    .pulse { animation: pulse 2s infinite; }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    html.dark .theme-classic {
-      background-color: #000;
-      color: white;
-    }
-  </style>
+  .theme-classic {
+    --bg-color: #f9fafb;
+    --text-color: #111827;
+  }
+  html.dark .theme-classic {
+    --bg-color: #000;
+    --text-color: #fff;
+  }
+
+  .theme-space {
+    --bg-color: linear-gradient(to right, #1e3a8a, #3b82f6);
+    --text-color: #fff;
+  }
+  .theme-candy {
+    --bg-color: linear-gradient(to right, #ec4899, #facc15);
+    --text-color: #1f2937;
+  }
+
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.4s, color 0.4s;
+  }
+
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+</style>
 </head>
 <body class="full-screen flex-center theme-classic">
   <div class="container space-y-6">
