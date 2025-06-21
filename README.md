@@ -173,6 +173,14 @@ of this software... [full license text would follow]
 
 ---
 
+## 📥 Clone This Repository
+
+To get a local copy up and running:
+
+```bash
+git clone https://github.com/Gyanankur23/GPB-Tic-Tac-Toe.git
+cd GPB-Tic-Tac-Toe
+
 ## 🙌 Contributing
 
 Suggestions? Want to improve AI logic, add new achievements, or enhance UI? Pull requests and ideas are welcome!
