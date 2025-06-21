@@ -25,6 +25,8 @@ Welcome to **GPB Tic-Tac-Toe**, a dynamic, theme-rich, and feature-packed web-ba
 
 ```
 📁 GPB-TicTacToe/
+|———assets/ 
+    ———logo.png.      #main logo
 ├── index.html         # Landing page
 ├── tic.html           # Main dashboard with mode/theme toggle
 ├── play.html          # Select modes, difficulty, and players
