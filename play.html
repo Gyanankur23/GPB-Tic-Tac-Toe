@@ -7,23 +7,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="tac.css">
   <style>
-.theme-classic {
-  --bg-color: linear-gradient(135deg, #f9fafb, #ffe29f, #ffa8a8, #a18cd1);
-  --text-color: #111827;
-}
-
-/* === Space Theme === */
-.theme-space {
-  --bg-color: linear-gradient(to right, #1e3a8a, #3b82f6);
-  --text-color: #fff;
-}
-
-/* === Candy Theme === */
-.theme-candy {
-  --bg-color: linear-gradient(to right, #ec4899, #facc15);
-  --text-color: #1f2937;
-}
-    .pulse { animation: pulse 1.5s infinite; }
+    /* Theme Definitions */
+    .theme-classic {
+      --bg-color: linear-gradient(135deg, #f9fafb, #ffe29f, #ffa8a8, #a18cd1);
+      --text-color: #111827;
+    }
+    .theme-space {
+      --bg-color: linear-gradient(to right, #1e3a8a, #3b82f6);
+      --text-color: #fff;
+    }
+    .theme-candy {
+      --bg-color: linear-gradient(to right, #ec4899, #facc15);
+      --text-color: #1f2937;
+    }
+    .pulse { 
+      animation: pulse 1.5s infinite; 
+    }
     @keyframes pulse {
       0% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.05); opacity: 0.7; }
@@ -31,7 +30,7 @@
     }
   </style>
 </head>
-<body class="full-screen flex-center">
+<body class="full-screen flex-center theme-classic">
   <div class="container space-y-8">
     <h1 class="text-4xl font-bold pulse">Choose Game Mode</h1>
     <div class="flex justify-center space-x-8">
@@ -44,13 +43,12 @@
         <span>Play with Computer</span>
       </button>
     </div>
-    
+
     <!-- Friend Mode Setup -->
     <div id="friendSetup" class="hidden space-y-4">
       <h2 class="text-2xl">Enter Player Names</h2>
       <input id="player1" type="text" placeholder="Player 1 (X)" class="border p-2 rounded w-full"/>
       <input id="player2" type="text" placeholder="Player 2 (O)" class="border p-2 rounded w-full"/>
-      <!-- Added Game Mode dropdown for Friend mode -->
       <div>
         <label for="friendModeSelector" class="block text-lg font-semibold">Select Game Mode:</label>
         <select id="friendModeSelector" class="border p-2 rounded w-full">
@@ -61,7 +59,7 @@
       </div>
       <button id="startFriendGame">Start Game</button>
     </div>
-    
+
     <!-- Computer Mode Setup -->
     <div id="computerSetup" class="hidden space-y-4">
       <h2 class="text-2xl">Select Difficulty</h2>
@@ -86,31 +84,29 @@
           <option value="tournament">Tournament</option>
         </select>
         <p class="text-sm text-gray-500 mt-1">
-          Classic: No time limit.
-          Blitz: 10 seconds per turn.
-          Tournament: Best-of-three rounds (no per-turn timer).
+          Classic: No time limit. Blitz: 10 seconds per turn. Tournament: Best-of-three rounds (no per-turn timer).
         </p>
       </div>
       <button id="startComputerGame">Start Game</button>
     </div>
-    
-    <!-- Theme Selector (applies to both modes) -->
+
+    <!-- Theme Selector -->
     <div class="space-y-1">
       <label for="themeSelector" class="text-lg font-semibold">Theme:</label>
       <select id="themeSelector" class="border p-2 rounded w-full">
-        <option value="default">Classic</option>
+        <option value="classic">Classic</option>
         <option value="space">Space</option>
         <option value="candy">Candy</option>
       </select>
     </div>
-    
+
     <!-- Game Stats -->
     <div class="bg-gray-100 p-4 rounded text-sm">
       <h3 class="font-semibold mb-2">Your Stats</h3>
       <p>Total Games: <span id="totalGames">0</span></p>
       <p>Wins: <span id="wins">0</span>, Losses: <span id="losses">0</span>, Draws: <span id="draws">0</span></p>
     </div>
-    
+
     <!-- Achievements Info -->
     <div class="bg-yellow-100 p-4 rounded text-sm">
       <h3 class="font-semibold mb-2">Achievements</h3>
@@ -120,10 +116,10 @@
         <li>🔥 Win Streak</li>
       </ul>
     </div>
-    
+
     <button id="backBtn">Back</button>
   </div>
-  
+
   <!-- Mode Instructions Modal -->
   <div id="modeInstructionsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="modal-content bg-white p-6 rounded shadow-lg">
@@ -132,70 +128,78 @@
       <button id="instructionCloseBtn" class="px-4 py-2 bg-green-500 text-white rounded">OK</button>
     </div>
   </div>
-  
+
   <script>
-    // Apply theme changes from the dropdown on this page.
-    document.getElementById('themeSelector').addEventListener('change', (e) => {
-      document.body.setAttribute('data-theme', e.target.value);
+    // Restore and apply saved theme (default to theme-classic)
+    const savedTheme = localStorage.getItem("theme") || "theme-classic";
+    document.body.className = "full-screen flex-center " + savedTheme;
+    const themeDropdown = document.getElementById("themeSelector");
+    // Set dropdown value by removing "theme-" prefix.
+    themeDropdown.value = savedTheme.replace("theme-", "");
+    // Update the theme on selection change.
+    themeDropdown.addEventListener("change", (e) => {
+      const newTheme = "theme-" + e.target.value;
+      document.body.className = "full-screen flex-center " + newTheme;
+      localStorage.setItem("theme", newTheme);
     });
-    
-    // Load basic stats
+
+    // Load basic stats from localStorage
     document.getElementById("totalGames").textContent = localStorage.getItem("totalGames") || 0;
     document.getElementById("wins").textContent = localStorage.getItem("wins") || 0;
     document.getElementById("losses").textContent = localStorage.getItem("losses") || 0;
     document.getElementById("draws").textContent = localStorage.getItem("draws") || 0;
-    
+
     // Toggle panels for Friend vs. Computer mode.
-    const playFriendBtn = document.getElementById('playFriendBtn');
-    const playComputerBtn = document.getElementById('playComputerBtn');
-    playFriendBtn.addEventListener('click', () => {
-      document.getElementById('friendSetup').classList.remove('hidden');
-      document.getElementById('computerSetup').classList.add('hidden');
+    const playFriendBtn = document.getElementById("playFriendBtn");
+    const playComputerBtn = document.getElementById("playComputerBtn");
+    playFriendBtn.addEventListener("click", () => {
+      document.getElementById("friendSetup").classList.remove("hidden");
+      document.getElementById("computerSetup").classList.add("hidden");
     });
-    playComputerBtn.addEventListener('click', () => {
-      document.getElementById('computerSetup').classList.remove('hidden');
-      document.getElementById('friendSetup').classList.add('hidden');
+    playComputerBtn.addEventListener("click", () => {
+      document.getElementById("computerSetup").classList.remove("hidden");
+      document.getElementById("friendSetup").classList.add("hidden");
     });
-    
+
     // Variables for chosen settings.
     let selectedDiff = "easy";
     document.querySelectorAll(".diffBtn").forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll(".diffBtn").forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".diffBtn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
         selectedDiff = btn.dataset.diff;
       });
     });
     let selectedSymbol = "X";
     document.querySelectorAll(".symbolBtn").forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll(".symbolBtn").forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".symbolBtn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
         selectedSymbol = btn.dataset.symbol;
       });
     });
-    
-    // Modal for instructions.
-    const modeModal = document.getElementById('modeInstructionsModal');
-    const instructionTitle = document.getElementById('instructionTitle');
-    const instructionText = document.getElementById('instructionText');
-    const instructionCloseBtn = document.getElementById('instructionCloseBtn');
+
+    // Modal for mode instructions.
+    const modeModal = document.getElementById("modeInstructionsModal");
+    const instructionTitle = document.getElementById("instructionTitle");
+    const instructionText = document.getElementById("instructionText");
+    const instructionCloseBtn = document.getElementById("instructionCloseBtn");
     function showModeInstructions(title, text, callback) {
       instructionTitle.textContent = title;
       instructionText.textContent = text;
-      modeModal.classList.remove('hidden');
+      modeModal.classList.remove("hidden");
       instructionCloseBtn.onclick = () => {
-        modeModal.classList.add('hidden');
+        modeModal.classList.add("hidden");
         if (callback) callback();
       };
     }
-    
-    // Start Friend Game: Collect player names and game mode from friend mode controls.
-    document.getElementById('startFriendGame').addEventListener('click', () => {
-      const player1 = document.getElementById('player1').value.trim() || "Player 1";
-      const player2 = document.getElementById('player2').value.trim() || "Player 2";
+
+    // Start Friend Game: Gather input and navigate to game page.
+    document.getElementById("startFriendGame").addEventListener("click", () => {
+      const player1 = document.getElementById("player1").value.trim() || "Player 1";
+      const player2 = document.getElementById("player2").value.trim() || "Player 2";
       const gameMode = document.getElementById("friendModeSelector").value || "classic";
-      showModeInstructions("Friend Mode Instructions", "In Friend mode, take turns at your own pace. Game Mode selected: " + gameMode, () => {
+      showModeInstructions("Friend Mode Instructions", "In Friend mode, take turns at your own pace. Game Mode: " + gameMode, () => {
         sessionStorage.setItem("playerMode", "friend");
         sessionStorage.setItem("player1", player1);
         sessionStorage.setItem("player2", player2);
@@ -203,9 +207,9 @@
         window.location.href = "game.html";
       });
     });
-    
-    // Start Computer Game.
-    document.getElementById('startComputerGame').addEventListener('click', () => {
+
+    // Start Computer Game: Gather settings and navigate to game page.
+    document.getElementById("startComputerGame").addEventListener("click", () => {
       const modeSelect = document.getElementById("modeSelector");
       const gameMode = modeSelect ? modeSelect.value : "classic";
       let instructions = "";
@@ -214,7 +218,7 @@
       } else if (gameMode === "blitz") {
         instructions = "Blitz Mode: You have 10 seconds per turn! Make quick decisions.";
       } else if (gameMode === "tournament") {
-        instructions = "Tournament Mode: Best-of-three rounds. No per-turn timer.";
+        instructions = "Tournament Mode: Best-of-three rounds (no per-turn timer).";
       }
       showModeInstructions("Computer Mode Instructions", instructions, () => {
         sessionStorage.setItem("playerMode", "computer");
@@ -224,8 +228,9 @@
         window.location.href = "game.html";
       });
     });
-    
-    document.getElementById('backBtn').addEventListener('click', () => {
+
+    // Back button: Navigate to home page.
+    document.getElementById("backBtn").addEventListener("click", () => {
       window.location.href = "tic.html";
     });
   </script>
