@@ -13,10 +13,6 @@
   --bg-color: linear-gradient(135deg, #f9fafb, #ffe29f, #ffa8a8, #a18cd1);
   --text-color: #111827;
 }
-html.dark .theme-classic {
-  --bg-color: #000;
-  --text-color: #fff;
-}
 
 /* === Space Theme === */
 .theme-space {
